@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#fff7ef" />
+  <meta name="description" content="生日聚会 Dress Code 黑白灰穿搭检测，照片只在手机本地分析。" />
+  <title>彩色通行证 · Dress Code 裁判</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+  <div class="ambient-shape ambient-one" aria-hidden="true"></div>
+  <div class="ambient-shape ambient-two" aria-hidden="true"></div>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">✳</span><span>THE COLOR CLUB <small>/ BIRTHDAY EDITION</small></span></div>
+      <div class="top-flag">NO BLACK · NO WHITE · NO GRAY</div>
+    </header>
+    <section class="hero" aria-labelledby="title">
+      <div class="eyebrow"><span class="star">✦</span> PARTY DRESS CODE CHECKER <span class="star">✦</span></div>
+      <h1 id="title">今天，<span class="marker">禁止低调。</span></h1>
+      <p>上传一张全身照，看看你的黑白灰穿搭占了多少。越彩色，惩罚点越少！</p>
+      <div class="pills"><span>📸 拍照即测</span><span>🎨 黑白灰高亮</span><span>🔒 照片仅在本机处理</span></div>
+    </section>
+    <div class="layout">
+      <section class="panel photo-panel" aria-labelledby="upload-title">
+        <div class="panel-head"><div><span class="step">01 / PHOTO</span><h2 id="upload-title">穿搭检测</h2></div><span class="stamp">COLOR TEST</span></div>
+        <div class="photo-stage" id="photo-stage">
+          <div class="empty-state" id="empty-state"><div class="illustration" aria-hidden="true">🪩<span>✨</span></div><strong>准备好接受颜色审判了吗？</strong><p>建议正面全身照 · 背景简洁 · 光线均匀<br>让另一位朋友帮忙拍摄，效果更准</p></div>
+          <canvas id="preview-canvas" aria-label="上传的照片与检测高亮" hidden></canvas>
+          <div class="photo-tag" id="photo-tag" hidden>✨ 已标出判定为黑白灰的服饰像素</div>
+        </div>
+        <div class="upload-actions">
+          <button class="btn btn-primary" id="camera-button" type="button">📸 现场拍一张</button>
+          <button class="btn btn-secondary" id="album-button" type="button">↥ 从相册选图</button>
+        </div>
+        <input type="file" id="camera-input" accept="image/*" capture="environment" hidden />
+        <input type="file" id="album-input" accept="image/*" hidden />
+        <div class="stage-footer"><span class="dot" id="status-dot"></span><span id="status-text" role="status" aria-live="polite">上传照片后开始检测</span></div>
+        <div class="view-actions" id="view-actions" hidden>
+          <button class="tiny-btn active" type="button" id="view-overlay">显示高亮</button>
+          <button class="tiny-btn" type="button" id="view-original">查看原图</button>
+          <button class="tiny-btn" type="button" id="reset-button">换一张</button>
+        </div>
+      </section>
+      <div class="side-stack">
+        <section class="panel result-panel" aria-labelledby="result-title">
+          <div class="panel-head"><div><span class="step">02 / VERDICT</span><h2 id="result-title">颜色裁判结果</h2></div><span class="result-emoji" aria-hidden="true">⚡</span></div>
+          <div class="score-grid">
+            <div class="score-box"><span>黑白灰占比</span><strong class="big-stat" id="ratio-output">--<small>%</small></strong><small>可见服装投影像素占比</small></div>
+            <div class="score-box accent"><span>获得惩罚点</span><strong class="big-stat" id="points-output">--<small>点</small></strong><small id="points-caption">等待检测</small></div>
+          </div>
+          <div class="meter-head"><b>穿搭颜色分布</b><span id="sample-count">尚未检测</span></div>
+          <div class="meter" id="meter" aria-label="穿搭颜色分布"><div id="meter-black"></div><div id="meter-gray"></div><div id="meter-white"></div><div id="meter-color"></div></div>
+          <div class="legend"><span><i class="key black"></i>黑 <b id="black-value">--</b></span><span><i class="key gray"></i>灰 <b id="gray-value">--</b></span><span><i class="key white"></i>白 <b id="white-value">--</b></span><span><i class="key color"></i>彩色 <b id="color-value">--</b></span></div>
+          <p class="verdict" id="verdict">上传照片后揭晓今日的彩色通行证！</p>
+          <button class="btn btn-outline btn-export" id="export-button" type="button" disabled>↓ 保存判罚结果图片</button>
+        </section>
+        <section class="panel settings-panel" aria-labelledby="settings-title">
+          <div class="panel-head"><div><span class="step">03 / PARTY RULES</span><h2 id="settings-title">裁判规则设置</h2></div><span class="tune" aria-hidden="true">☷</span></div>
+          <div class="setting"><div class="setting-title"><label for="per-point">每多少个百分点计 1 点</label><output id="per-point-label">10%</output></div><input type="range" id="per-point" min="2" max="25" step="1" value="10" /><div class="range-ends"><span>严格 · 2%</span><span>宽松 · 25%</span></div></div>
+          <div class="setting"><div class="setting-title"><label for="cap-points">最多惩罚点数</label><output id="cap-points-label">3 点</output></div><input type="range" id="cap-points" min="0" max="8" step="1" value="3" /><div class="range-ends"><span>0</span><span>8</span></div></div>
+          <div class="setting"><div class="setting-title"><label for="chroma">黑白灰识别容差（Lab 色度）</label><output id="chroma-label">12</output></div><input type="range" id="chroma" min="4" max="30" step="1" value="12" /><div class="range-ends"><span>更严格</span><span>更宽松</span></div></div>
+          <div class="twins"><div class="setting"><div class="setting-title"><label for="black-l">黑色亮度阈值</label><output id="black-l-label">25</output></div><input type="range" id="black-l" min="12" max="40" step="1" value="25" /></div><div class="setting"><div class="setting-title"><label for="white-l">白色亮度阈值</label><output id="white-l-label">82</output></div><input type="range" id="white-l" min="65" max="96" step="1" value="82" /></div></div>
+          <label class="toggle-row"><span><strong>计入配饰</strong><small>模型的「其他／配饰」类别，不保证鞋帽识别完整</small></span><input type="checkbox" id="accessories" role="switch" /><span class="switch"></span></label>
+          <div class="formula">惩罚点 = min(向上取整[黑白灰占比 ÷ <strong id="formula-step">10</strong>%], <strong id="formula-cap">3</strong>)</div>
+          <div class="share-rules" id="share-rules"><button class="btn share-button" id="share-link" type="button">🔗 复制统一规则链接</button><p id="share-status" role="status" aria-live="polite">主持人设置完参数后复制链接，发给来宾即可锁定这套规则。</p></div><div class="shared-lock" id="shared-lock" hidden>🔒 当前为来宾模式：判罚规则由主持人统一设置</div><button class="reset-settings" id="restore-settings" type="button">↺ 恢复默认规则</button>
+        </section>
+      </div>
+    </div>
+    <section class="notice"><div class="notice-icon">i</div><p><strong>公平提示：</strong>结果只统计照片中 AI 识别到的<span>可见服饰投影像素</span>，不是衣物的实际平方厘米面积。光线、阴影、拍摄角度、深蓝和米白等近似色会影响判断；小配饰可能漏检。同一张照片及阈值下使用固定计算规则。游戏建议以自愿趣味任务或无酒精饮品计点，不强制饮酒。</p></section>
+    <footer>MADE FOR COLORFUL PEOPLE ✦ <span>LOCAL-FIRST · NO PHOTO UPLOADS</span></footer>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
